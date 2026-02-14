@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>裏の顔診断</title>
+<meta property="og:title" content="裏の顔診断">
+<meta property="og:description" content="あなたの裏の顔、暴いちゃいます。">
+<meta property="og:image" content="https://paul13131313.github.io/ura-shindan/ogp.png">
+<meta property="og:url" content="https://paul13131313.github.io/ura-shindan/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kaisei+Opti:wght@700&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0f;
+  --card-bg: #13131f;
+  --accent1: #a21caf;
+  --accent2: #f59e0b;
+  --text: #e2e0e8;
+  --font-title: 'Kaisei Opti', serif;
+  --font-body: 'Zen Kaku Gothic New', sans-serif;
+}
+
+html { font-size: 16px; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ── Floating orbs ── */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: .35;
+  pointer-events: none;
+  z-index: 0;
+}
+.orb--1 {
+  width: 340px; height: 340px;
+  background: radial-gradient(circle, #a21caf, transparent 70%);
+  top: -60px; left: -80px;
+  animation: float1 14s ease-in-out infinite alternate;
+}
+.orb--2 {
+  width: 260px; height: 260px;
+  background: radial-gradient(circle, #6d28d9, transparent 70%);
+  bottom: 10%; right: -60px;
+  animation: float2 18s ease-in-out infinite alternate;
+}
+.orb--3 {
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, #f59e0b, transparent 70%);
+  top: 40%; left: 50%;
+  animation: float3 20s ease-in-out infinite alternate;
+}
+@keyframes float1 { to { transform: translate(60px, 80px); } }
+@keyframes float2 { to { transform: translate(-80px, -60px); } }
+@keyframes float3 { to { transform: translate(-100px, 40px); } }
+
+/* ── Container ── */
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ── Screens ── */
+.screen { display: none; animation: fadeIn .6s ease; }
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ══════════════════════════
+   TOP SCREEN
+   ══════════════════════════ */
+.top-eye {
+  width: 120px; height: 120px;
+  margin: 0 auto 32px;
+  position: relative;
+}
+.top-eye__outer {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  border: 3px solid var(--accent1);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  box-shadow: 0 0 40px rgba(162,28,175,.4), inset 0 0 30px rgba(162,28,175,.15);
+}
+.top-eye__iris {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 40%, #d946ef, #7c3aed 60%, #3b0764);
+  position: relative;
+  animation: irisGlow 3s ease-in-out infinite alternate;
+}
+@keyframes irisGlow {
+  from { box-shadow: 0 0 20px #a21caf, 0 0 60px rgba(162,28,175,.3); }
+  to   { box-shadow: 0 0 35px #d946ef, 0 0 80px rgba(217,70,239,.4); }
+}
+.top-eye__pupil {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: #0a0a0f;
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  animation: pupilLook 6s ease-in-out infinite;
+}
+@keyframes pupilLook {
+  0%, 100% { transform: translate(-50%, -50%); }
+  25% { transform: translate(-35%, -55%); }
+  50% { transform: translate(-55%, -45%); }
+  75% { transform: translate(-45%, -55%); }
+}
+.top-eye__highlight {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  position: absolute; top: 30%; left: 58%;
+  opacity: .8;
+}
+/* Eyelid blink */
+.top-eye__lid {
+  position: absolute; top: 0; left: 0;
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: var(--bg);
+  transform-origin: center top;
+  animation: blink 4s ease-in-out infinite;
+  transform: scaleY(0);
+}
+@keyframes blink {
+  0%, 90%, 100% { transform: scaleY(0); }
+  95% { transform: scaleY(1); }
+}
+
+.title {
+  font-family: var(--font-title);
+  font-size: 2.2rem;
+  text-align: center;
+  background: linear-gradient(135deg, var(--accent1), #d946ef, var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+.subtitle {
+  text-align: center;
+  font-size: .95rem;
+  color: #9f9bab;
+  margin-bottom: 40px;
+  letter-spacing: .05em;
+}
+
+.btn-start {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto;
+  padding: 16px 0;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent1), #7c3aed);
+  border: none;
+  border-radius: 60px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s, box-shadow .2s;
+  box-shadow: 0 4px 24px rgba(162,28,175,.4);
+}
+.btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 32px rgba(162,28,175,.55); }
+.btn-start:active { transform: translateY(0); }
+.btn-start::after {
+  content: '';
+  position: absolute; top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,.12) 50%, transparent 60%);
+  animation: shimmer 3s infinite;
+}
+@keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+
+/* ══════════════════════════
+   QUESTION SCREEN
+   ══════════════════════════ */
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,.08);
+  border-radius: 2px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.progress-bar__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  border-radius: 2px;
+  transition: width .4s ease;
+}
+.progress-label {
+  font-size: .8rem;
+  color: #7a7688;
+  margin-bottom: 28px;
+  text-align: right;
+}
+
+.question-text {
+  font-family: var(--font-title);
+  font-size: 1.25rem;
+  line-height: 1.7;
+  margin-bottom: 28px;
+  text-align: center;
+  animation: fadeIn .4s ease;
+}
+
+.choices { display: flex; flex-direction: column; gap: 12px; }
+.choice-btn {
+  width: 100%;
+  padding: 16px 20px;
+  font-family: var(--font-body);
+  font-size: .95rem;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--card-bg);
+  border: 1px solid rgba(162,28,175,.2);
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: background .2s, border-color .2s, transform .15s, box-shadow .2s;
+  position: relative;
+  overflow: hidden;
+}
+.choice-btn:hover {
+  background: rgba(162,28,175,.1);
+  border-color: var(--accent1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(162,28,175,.2);
+}
+.choice-btn:active { transform: translateY(0); }
+.choice-btn.selected {
+  background: rgba(162,28,175,.2);
+  border-color: var(--accent1);
+  box-shadow: 0 0 20px rgba(162,28,175,.3);
+}
+
+/* ══════════════════════════
+   RESULT SCREEN
+   ══════════════════════════ */
+.result-container { animation: resultAppear .8s ease; }
+@keyframes resultAppear {
+  0%   { opacity: 0; transform: scale(.9) translateY(20px); filter: blur(8px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); filter: blur(0); }
+}
+
+.result-badge {
+  width: 100px; height: 100px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48px;
+  background: linear-gradient(135deg, rgba(162,28,175,.2), rgba(124,58,237,.15));
+  border: 2px solid var(--accent1);
+  box-shadow: 0 0 40px rgba(162,28,175,.3);
+  animation: badgePulse 2s ease-in-out infinite alternate;
+}
+@keyframes badgePulse {
+  from { box-shadow: 0 0 40px rgba(162,28,175,.3); }
+  to   { box-shadow: 0 0 60px rgba(162,28,175,.5); }
+}
+
+.result-label {
+  text-align: center;
+  font-size: .85rem;
+  color: var(--accent2);
+  margin-bottom: 8px;
+  letter-spacing: .15em;
+}
+.result-type {
+  font-family: var(--font-title);
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, #d946ef, var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.result-card {
+  background: var(--card-bg);
+  border: 1px solid rgba(162,28,175,.2);
+  border-radius: 16px;
+  padding: 24px 20px;
+  margin-bottom: 32px;
+  line-height: 1.85;
+  font-size: .93rem;
+  color: #c5c1d0;
+}
+
+.result-actions { display: flex; flex-direction: column; gap: 12px; }
+.btn-share {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%;
+  padding: 14px 0;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  background: #000;
+  border: 1px solid #333;
+  border-radius: 60px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.btn-share:hover { background: #1a1a2e; }
+.btn-share svg { width: 18px; height: 18px; fill: #fff; }
+.btn-retry {
+  display: block;
+  width: 100%;
+  padding: 14px 0;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid rgba(255,255,255,.15);
+  border-radius: 60px;
+  cursor: pointer;
+  transition: border-color .2s, background .2s;
+}
+.btn-retry:hover { border-color: var(--accent1); background: rgba(162,28,175,.08); }
+
+/* ── Fog overlay ── */
+.fog {
+  position: fixed;
+  bottom: 0; left: 0;
+  width: 100%; height: 120px;
+  background: linear-gradient(to top, rgba(10,10,15,.9), transparent);
+  pointer-events: none;
+  z-index: 2;
+}
+</style>
+</head>
+<body>
+
+<div class="orb orb--1"></div>
+<div class="orb orb--2"></div>
+<div class="orb orb--3"></div>
+<div class="fog"></div>
+
+<div class="container">
+
+  <!-- TOP -->
+  <div id="screen-top" class="screen active">
+    <div class="top-eye">
+      <div class="top-eye__outer">
+        <div class="top-eye__iris">
+          <div class="top-eye__pupil"></div>
+          <div class="top-eye__highlight"></div>
+        </div>
+      </div>
+      <div class="top-eye__lid"></div>
+    </div>
+    <h1 class="title">裏の顔診断</h1>
+    <p class="subtitle">あなたの裏の顔、暴いちゃいます。</p>
+    <button class="btn-start" id="btn-start">診断をはじめる</button>
+  </div>
+
+  <!-- QUESTION -->
+  <div id="screen-question" class="screen">
+    <div class="progress-bar"><div class="progress-bar__fill" id="progress-fill"></div></div>
+    <p class="progress-label" id="progress-label"></p>
+    <p class="question-text" id="question-text"></p>
+    <div class="choices" id="choices"></div>
+  </div>
+
+  <!-- RESULT -->
+  <div id="screen-result" class="screen">
+    <div class="result-container">
+      <div class="result-badge" id="result-badge"></div>
+      <p class="result-label">あなたの裏の顔は…</p>
+      <h2 class="result-type" id="result-type"></h2>
+      <div class="result-card" id="result-desc"></div>
+      <div class="result-actions">
+        <button class="btn-share" id="btn-share">
+          <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          結果をシェアする
+        </button>
+        <button class="btn-retry" id="btn-retry">もう一度診断する</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const TYPES = {
+  nechinechi: {
+    name: 'ねちねちストーカー',
+    emoji: '🔍',
+    desc: 'SNSで執拗に過去の発言を遡り、失言を見つけては炎上させることを生き甲斐にしている。「3年前のツイートですけど」が口癖。実生活では何の楽しみもなく、コンビニの惣菜パンばかり食べている。痔持ち。'
+  },
+  guchiguchi: {
+    name: 'ぐちぐちエンペラー',
+    emoji: '👑',
+    desc: '飲み会の3軒目で本領を発揮し、同じ愚痴を微妙に表現を変えて5回繰り返す帝王。周囲はとっくに聞いていないが、本人は「俺の話おもしろくない？」と確認してくるので余計にタチが悪い。翌朝「昨日俺なんか言った？」と聞いてくるまでがセット。'
+  },
+  iraira: {
+    name: 'いらいらモンスター',
+    emoji: '💢',
+    desc: 'コンビニの店員の動きが遅いだけで血圧が30上がる。エレベーターの「閉」ボタンを連打するのが癖。本人は「短気じゃないけど」と言い張るが、Wi-Fiが3秒途切れただけでルーターを再起動した実績がある。枕が変わると眠れない。'
+  },
+  harahara: {
+    name: 'はらはらトラベラー',
+    emoji: '😰',
+    desc: '旅行の計画を緻密に立てるが、当日は全て裏目に出る。パスポートを3回確認してもまだ不安。「もし飛行機が落ちたら」を毎回考え、遺書アプリをインストールしている。結局一番楽しかったのは空港のラウンジ。'
+  },
+  perapera: {
+    name: 'ぺらぺらマスター',
+    emoji: '🗣️',
+    desc: '「ここだけの話なんだけど」を1日に8回使う情報テロリスト。人の秘密を共有することでしか人間関係を構築できない。LINEグループを5つ掛け持ちし、全てで微妙に違うバージョンの噂話を流している。信用スコアは限りなくゼロに近い。'
+  },
+  purapura: {
+    name: 'ぷらぷらスモーカー',
+    emoji: '🚬',
+    desc: '人生のあらゆる決断を先延ばしにし、「まあなんとかなるっしょ」で30年生きてきた。休日は特に予定もなく近所を徘徊し、気づいたら知らない街にいる。貯金はないが危機感もない。唯一の特技は、どんな場所でも喫煙所を見つけること。'
+  },
+  herahera: {
+    name: 'へらへらハンター',
+    emoji: '😄',
+    desc: '場の空気を読んで愛想笑いをすることに全ステータスを振った人間。「わかるー」が口癖だが何もわかっていない。八方美人を極めすぎて自分の本当の意見が何かわからなくなっている。鏡の前で笑顔の練習をしていたことがある。'
+  },
+  charachara: {
+    name: 'ちゃらちゃらパートナー',
+    emoji: '💕',
+    desc: '恋愛体質を超えて恋愛依存症。常に3人とマッチングアプリでやりとりし、「俺/私って一途なんだよね」と本気で言う。元カレ/元カノの数を聞かれると「ちゃんと付き合ったのは…」と定義の話を始める。スマホのストレージの半分は自撮り。'
+  }
+};
+
+const QUESTIONS = [
+  {
+    text: '金曜の夜、予定がなかった。どうする？',
+    choices: [
+      { text: 'SNSを延々スクロールする', scores: { nechinechi: 2, guchiguchi: 1 } },
+      { text: '急に不安になって友達に連絡する', scores: { harahara: 2, charachara: 1 } },
+      { text: 'とりあえず外に出て歩く', scores: { purapura: 2, herahera: 1 } },
+      { text: '誰かの噂話をまとめる', scores: { perapera: 2, iraira: 1 } }
+    ]
+  },
+  {
+    text: '友達が大きなミスをした。最初に思うことは？',
+    choices: [
+      { text: '「前から言おうと思ってたんだけど…」', scores: { nechinechi: 2, iraira: 1 } },
+      { text: '「大丈夫大丈夫！（内心ウケる）」', scores: { herahera: 2, perapera: 1 } },
+      { text: '「まあそういうこともあるよ（他人事）」', scores: { purapura: 2, guchiguchi: 1 } },
+      { text: '「え、誰に言っていい？」', scores: { perapera: 2, charachara: 1 } }
+    ]
+  },
+  {
+    text: '長蛇の列に並んでいる。あなたの行動は？',
+    choices: [
+      { text: '並んでいる間にスマホで誰かの過去投稿を漁る', scores: { nechinechi: 2, perapera: 1 } },
+      { text: 'イライラして舌打ちしそうになる', scores: { iraira: 2, guchiguchi: 1 } },
+      { text: '隣の人に話しかけてしまう', scores: { charachara: 2, herahera: 1 } },
+      { text: '列を離れてふらっとどこかへ行く', scores: { purapura: 2, harahara: 1 } }
+    ]
+  },
+  {
+    text: '旅行の準備、あなたのスタイルは？',
+    choices: [
+      { text: '持ち物リストを3回チェックする', scores: { harahara: 2, iraira: 1 } },
+      { text: '前日の夜に慌ててやる', scores: { purapura: 2, herahera: 1 } },
+      { text: '一緒に行く人の荷物まで気になる', scores: { charachara: 2, nechinechi: 1 } },
+      { text: '準備より先に現地の飲食店を調べる', scores: { guchiguchi: 2, perapera: 1 } }
+    ]
+  },
+  {
+    text: 'あなたの「つい関わっちゃう」SNS投稿は？',
+    choices: [
+      { text: '炎上案件のリプ欄', scores: { nechinechi: 2, iraira: 1 } },
+      { text: '匿名の愚痴アカウント', scores: { guchiguchi: 2, harahara: 1 } },
+      { text: '恋愛相談・マッチングアプリの体験談', scores: { charachara: 2, perapera: 1 } },
+      { text: '何も反応しないけど全部見てる', scores: { herahera: 2, purapura: 1 } }
+    ]
+  }
+];
+
+let currentQ = 0;
+const scores = {};
+Object.keys(TYPES).forEach(k => scores[k] = 0);
+
+const $top      = document.getElementById('screen-top');
+const $question = document.getElementById('screen-question');
+const $result   = document.getElementById('screen-result');
+const $fill     = document.getElementById('progress-fill');
+const $pLabel   = document.getElementById('progress-label');
+const $qText    = document.getElementById('question-text');
+const $choices  = document.getElementById('choices');
+const $rBadge   = document.getElementById('result-badge');
+const $rType    = document.getElementById('result-type');
+const $rDesc    = document.getElementById('result-desc');
+
+function showScreen(el) {
+  [$top, $question, $result].forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+  el.style.animation = 'none';
+  el.offsetHeight;
+  el.style.animation = '';
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[currentQ];
+  const total = QUESTIONS.length;
+  $fill.style.width = ((currentQ + 1) / total * 100) + '%';
+  $pLabel.textContent = 'Q' + (currentQ + 1) + ' / ' + total;
+  $qText.textContent = q.text;
+  $qText.style.animation = 'none';
+  $qText.offsetHeight;
+  $qText.style.animation = '';
+
+  $choices.innerHTML = '';
+  q.choices.forEach(function(c, i) {
+    var btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.textContent = c.text;
+    btn.addEventListener('click', function() { selectChoice(i); });
+    $choices.appendChild(btn);
+  });
+}
+
+function selectChoice(idx) {
+  var btns = $choices.querySelectorAll('.choice-btn');
+  btns.forEach(function(b) { b.style.pointerEvents = 'none'; });
+  btns[idx].classList.add('selected');
+
+  var chosen = QUESTIONS[currentQ].choices[idx];
+  Object.keys(chosen.scores).forEach(function(k) {
+    scores[k] += chosen.scores[k];
+  });
+
+  setTimeout(function() {
+    currentQ++;
+    if (currentQ < QUESTIONS.length) {
+      renderQuestion();
+    } else {
+      showResult();
+    }
+  }, 350);
+}
+
+function showResult() {
+  var maxScore = -1;
+  var winners = [];
+  Object.keys(scores).forEach(function(k) {
+    if (scores[k] > maxScore) { maxScore = scores[k]; winners = [k]; }
+    else if (scores[k] === maxScore) { winners.push(k); }
+  });
+  var winnerKey = winners[Math.floor(Math.random() * winners.length)];
+  var type = TYPES[winnerKey];
+
+  $rBadge.textContent = type.emoji;
+  $rType.textContent = type.name;
+  $rDesc.textContent = type.desc;
+
+  showScreen($result);
+
+  document.getElementById('btn-share').onclick = function() {
+    var siteUrl = 'https://paul13131313.github.io/ura-shindan/';
+    var shareText = '\u79C1\u306E\u88CF\u306E\u9854\u306F\u300C' + type.name + '\u300D\u3067\u3057\u305F\u2026\uD83D\uDE08\n\u3042\u306A\u305F\u306E\u88CF\u306E\u9854\u306F\uFF1F\u2192 ' + siteUrl + '\n#\u88CF\u306E\u9854\u8A3A\u65AD';
+    var url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText);
+    window.open(url, '_blank', 'width=550,height=420');
+  };
+}
+
+function resetQuiz() {
+  currentQ = 0;
+  Object.keys(scores).forEach(function(k) { scores[k] = 0; });
+  renderQuestion();
+  showScreen($question);
+}
+
+document.getElementById('btn-start').addEventListener('click', function() {
+  resetQuiz();
+});
+document.getElementById('btn-retry').addEventListener('click', function() {
+  resetQuiz();
+});
+</script>
+</body>
+</html>
